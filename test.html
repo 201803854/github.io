@@ -58,7 +58,7 @@
             // 서버로 데이터를 전송하여 감정 분석 결과를 받아옵니다.
           $.ajax({
                 type: 'POST',
-                url: 'https://vision.googleapis.com/v1/images:annotate?key=<api_key>',
+                url: 'https://vision.googleapis.com/v1/images:annotate?key=api_key',
                 data: JSON.stringify({
                     requests: [
                         {
