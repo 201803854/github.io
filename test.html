@@ -78,9 +78,11 @@
                 dataType: 'json',
                 success: function (response) {
                     // 감정 분석 결과를 출력합니다.
-                    const emotion = response.choices[0].text;
-                    showEmotionResult(emotion);
-                },
+    const faceAnnotations = response.responses[0].faceAnnotations;
+    if (faceAnnotations && faceAnnotations.length > 0) {
+      const joyLikelihood = faceAnnotations[0].joyLikelihood;
+      const sorrowLikelihood = faceAnnotations[0].sorrowLikelihood;
+      const angerLikelihood = faceAnnotations[0].angerLikelihood;                },
                 error: function (xhr, status, error) {
                     console.error('감정 분석을 실패했습니다:', error);
                 }
