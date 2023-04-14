@@ -77,20 +77,23 @@
                contentType: 'application/json',
                 dataType: 'json',
                 success: function (response) {
-                    // 감정 분석 결과를 출력합니다.
+    // 감정 분석 결과를 출력합니다.
     const faceAnnotations = response.responses[0].faceAnnotations;
     if (faceAnnotations && faceAnnotations.length > 0) {
       const joyLikelihood = faceAnnotations[0].joyLikelihood;
       const sorrowLikelihood = faceAnnotations[0].sorrowLikelihood;
-      const angerLikelihood = faceAnnotations[0].angerLikelihood;              
-      showEmotionResult(joyLikelihood);
-    },
-                error: function (xhr, status, error) {
-                    console.error('감정 분석을 실패했습니다:', error);
-                }
-            }});
+      const angerLikelihood = faceAnnotations[0].angerLikelihood;
+      // 감정 감지 결과에 따라 화면에 출력하거나 처리할 로직을 추가합니다.
+      // 예: showEmotionResult(joyLikelihood);
+    } else {
+      console.error('얼굴을 감지할 수 없습니다.');
+    }
+  },
+  error: function (xhr, status, error) {
+    console.error('감정 분석을 실패했습니다:', error);
+  }
+});
         }
-
         // 일정 간격으로 비디오 프레임을 캡처하고 감정 분석 결과를 받아오도록 설정합니다.
         setInterval(captureFrameAndDetectEmotion, 3000);
     </script>
