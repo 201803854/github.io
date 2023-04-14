@@ -1,14 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Webcam Emotion Detection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Webcam Emotion Detection</h1>
+    <div>
+        <video id="videoElement" width="640" height="480" autoplay></video>
+    </div>
+    <div>
+        <h2>감정 분석 결과</h2>
+        <p id="resultElement"></p>
+    </div>
+    <script>
+        // 웹 카메라에서 비디오를 가져올 수 있는지 확인하고, 비디오 요소에 연결합니다.
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+                const videoElement = document.getElementById('videoElement');
+                videoElement.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('비디오를 가져올 수 없습니다:', error);
+            });
 
-<!-- 웹 카메라 화면을 보여줄 비디오 태그 -->
-<video id="videoElement" width="400" height="300" autoplay></video>
-<!-- 감정 분석 결과를 출력할 요소 -->
-<div id="resultElement"></div>
-<script>
-// JavaScript 코드
-// 웹 카메라 화면을 보여줄 비디오 요소와 감정 분석 결과를 출력할 요소를 가져옵니다.
-const videoElement = document.getElementById('videoElement');
-const resultElement = document.getElementById('resultElement');
-var api_key= {
+        // 감정 분석 결과를 출력하는 함수
+        function showEmotionResult(emotion) {
+            const resultElement = document.getElementById('resultElement');
+            resultElement.innerHTML = `감정: ${emotion}`;
+        }
+
+        // 비디오에서 프레임을 캡처하고, 감정 분석 결과를 받아와 출력하는 함수
+        function captureFrameAndDetectEmotion() {
+            // 비디오 요소와 캔버스 요소를 가져옵니다.
+            const videoElement = document.getElementById('videoElement');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            // 비디오 프레임을 캔버스에 그립니다.
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            // 캔버스의 데이터 URL을 가져옵니다.
+            const dataURL = canvas.toDataURL('image/jpeg');
+          var api_key= {
   "type": "service_account",
   "project_id": "quantum-ether-381103",
   "private_key_id": "9f873825b56483f1786de3e5bcd19bdd82a008ae",
@@ -20,51 +54,35 @@ var api_key= {
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloudvision%40quantum-ether-381103.iam.gserviceaccount.com"
 };
-// getUserMedia() 함수를 사용하여 웹 카메라에 접근합니다.
-navigator.mediaDevices.getUserMedia({ video: true })
-.then((stream) => {
-  // 비디오 요소에 카메라 스트림을 설정하여 웹 카메라 화면을 보여줍니다.
-  videoElement.srcObject = stream;
 
-  // 비디오 요소의 "play" 이벤트가 발생하면, 비디오 화면의 현재 프레임을 캡처하고 base64로 인코딩하여 Vision AI API로 전송합니다.
-  videoElement.addEventListener('play', () => {
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
+            // 서버로 데이터를 전송하여 감정 분석 결과를 받아옵니다.
+            $.ajax({
+                type: 'POST',
+                url: 'https://api.openai.com/v1/images/generations',
+                headers: {
+                    'Authorization': 'Bearer <api_key>',
+                },
+                data: JSON.stringify({
+                    model: 'image-alpha-001',
+                    prompt: '감정 분석을 해주세요.',
+                    images: [dataURL],
+                    num_images: 1,
+                }),
+                contentType: 'application/json',
+                dataType: 'json',
+                success: function (response) {
+                    // 감정 분석 결과를 출력합니다.
+                    const emotion = response.choices[0].text;
+                    showEmotionResult(emotion);
+                },
+                error: function (xhr, status, error) {
+                    console.error('감정 분석을 실패했습니다:', error);
+                }
+            });
+        }
 
-    setInterval(() => {
-      context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      const imageDataURL = canvas.toDataURL('image/jpeg');
-      const base64ImageData = imageDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-
-      // Vision AI API에 POST 요청을 보내어 감정 분석 결과를 가져옵니다.
-      fetch('https://vision.googleapis.com/v1/images:annotate?key=api_key', {
-        method: 'POST',
-        body: JSON.stringify({
-          requests: [
-            {
-              image: { content: base64ImageData },
-              features: [{ type: 'FACE_DETECTION', maxResults: 1 }],
-            },
-          ],
-        }),
-        headers: { 'Content-Type': 'application/json' },
-      })
-      .then(response => response.json())
-      .then(data => {
-        // 감정 분석 결과를 처리하여 출력합니다.
-        const emotions = data.responses[0].faceAnnotations[0].joyLikelihood;
-        resultElement.textContent = `감정: ${emotions}`;
-      })
-      .catch(error => {
-        console.error('에러 발생:', error);
-      });
-    }, 1000); // 1초마다 카메라 프레임을 캡처하고 감정 분석 결과를 가져옵니다.
-  });
-})
-.catch(error => {
-  console.error('카메라 접근에러 발생:', error);
-  })
-.catch(error => {
-console.error('카메라 접근에 에러가 발생하였습니다:', error);
-});
-</script>
+        // 일정 간격으로 비디오 프레임을 캡처하고 감정 분석 결과를 받아오도록 설정합니다.
+        setInterval(captureFrameAndDetectEmotion, 3000);
+    </script>
+</body>
+</html>
