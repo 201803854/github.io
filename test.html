@@ -8,7 +8,18 @@
 // 웹 카메라 화면을 보여줄 비디오 요소와 감정 분석 결과를 출력할 요소를 가져옵니다.
 const videoElement = document.getElementById('videoElement');
 const resultElement = document.getElementById('resultElement');
-
+var api_key= {
+  "type": "service_account",
+  "project_id": "quantum-ether-381103",
+  "private_key_id": "9f873825b56483f1786de3e5bcd19bdd82a008ae",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDqnJXOvyCN1303\ns0dypNu27FYFhuAy+l/p7pAIuMWRZ73BTtPrV+8Htmb8jNbyz17zxOjnC1+QMzA7\njSvR5rHwk2+kuMVkyQ3WeMImy5nT/vhy3T8BZ9LgbMSjYC2o+1AdOy7WWdOkUWWv\nGneVVipyklAXFHg0q0G2dVWbW1dmqqQYEazpG6FjvZt+rZE1p1LC9xDpn3ZlZyEB\n18tJsBhnCZtvOHBzm3SGTsfe8C83dTSVTdgsvLYCXHcb4Xy537l0fp5kflElNMeq\nbACQu7GJcDd75JcvypYTPqKu92wPr8JlToHp/wVY0q4RcK76fCFN5kgenLyySFCE\nABMcLb6NAgMBAAECggEAD5Fb5HfsxFS9/53zGgGj/behfqTkSCWyix6UKqv+Giew\n4Pym1clEOHYLT+tVkQ+fHJxemwQ3b2ViKDV2KKu+93iFEkBbgtRPiYGCWposhzN2\nT4LsXR7DULaO9stZREsG1iW49irIPzFShsPCFyP8VZVtYJawYkhR6DZRe6lcO5jr\nG4pWXSL+UwxV+Gd98OWiN2SyxFgpWEpqrOeS77W7d/knMGYvhIqAnGxmAYjH2cp/\naPDjsdjtqEDIOZuqENc/WEn3rEM47jl3p6rRp/C6BYavaQbpCP04NRuruJbOHwT+\n4/ac3pkmIqkVjG17cXGgli/imRiOnq+Z+PkOmW8SYQKBgQD3MmHizBawu9ZLXWWC\nx//jsWWr4iNln7J2i07zSwGn4sZOSiaFx+PJOt4Q+2Ai1T7r0iW0UaPwUx1qNH+R\nHfCIrEbvtfLEFaQTBi37oH3DEiiwQssogY2/oimFd8yxNxZvoLU2EOJUmMU9bOLy\nqcaSSECJjNXONA9lbAfAU7JcYQKBgQDy93fIYNfSBxFyQk7wMRMy54qlFtpvBZ7T\n+aHqeizrp8R9wGY0gbbdjqMQoujIfZCeiS8jJnRibFyWpUBbC4OR4cMoCc+EUnWe\ndI+mQ6Y7cyG9MSmtFgkU4X9DI+prYqLlAw6ZfyHMU3zoc8AtjR4qFwecC3Y2KiWD\nHVNBMm7xrQKBgCt7aUyDqdocsG1BWIHQvGpI4iGB/cf6d2Hyz0hsgTYO5eMPmAcg\nSikzeaxzC04VRKQmqws08Sls9VehNG9KXO0toKy5zKJBTEMsaxo/+N8/anjWxvWx\nFEYJOFSJ5i+mCQRJuJZyEd3foZJUfPdCdfN1UiTf6RwEfFDS1+o0zsMBAoGBAN7V\nC+ygtQ+RH/UUz2UG/T6wkL28afVsyDBNQKzWBKDUqydR7+q0FMy6Zt95KdnHH33m\n/25TdGZYT8pyIMXfl3mR/vSXmtUW83yyFpU8chcQDp9/mWN/VDDsZ1VieTqnqhIz\nbY5lxM+qumJO1rBwPnwHxxjcgjxHB0Rq/tJKuOm5AoGAKM6Lz74Quvv9D+tXpqWb\nxvXzOFF8kJhT12G//u+YRqHJTIGgRknsodl+NxjcJ6DedJl456BQJ5ZzsfEYOtbf\nxzJD+Dm0y1EseBb7zxE/YG7/MkYq6+scxFBv0EUkDfPIzH2+uM2NRhuFUFxbi5iE\nSgEbPGUPAU1Djyn2ZeVkx3U=\n-----END PRIVATE KEY-----\n",
+  "client_email": "cloudvision@quantum-ether-381103.iam.gserviceaccount.com",
+  "client_id": "118346908876949479554",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloudvision%40quantum-ether-381103.iam.gserviceaccount.com"
+};
 // getUserMedia() 함수를 사용하여 웹 카메라에 접근합니다.
 navigator.mediaDevices.getUserMedia({ video: true })
 .then((stream) => {
@@ -26,7 +37,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
       const base64ImageData = imageDataURL.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
 
       // Vision AI API에 POST 요청을 보내어 감정 분석 결과를 가져옵니다.
-      fetch('https://vision.googleapis.com/v1/images:annotate?key=YOUR_API_KEY', {
+      fetch('https://vision.googleapis.com/v1/images:annotate?key=api_key', {
         method: 'POST',
         body: JSON.stringify({
           requests: [
