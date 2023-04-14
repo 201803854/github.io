@@ -56,19 +56,25 @@
 };
 
             // 서버로 데이터를 전송하여 감정 분석 결과를 받아옵니다.
-            $.ajax({
+          $.ajax({
                 type: 'POST',
-                url: 'https://api.openai.com/v1/images/generations',
-                headers: {
-                    'Authorization': 'Bearer <api_key>',
-                },
+                url: 'https://vision.googleapis.com/v1/images:annotate?key=<api_key>',
                 data: JSON.stringify({
-                    model: 'image-alpha-001',
-                    prompt: '감정 분석을 해주세요.',
-                    images: [dataURL],
-                    num_images: 1,
+                    requests: [
+                        {
+                            image: {
+                                content: dataURL.split(',')[1]
+                            },
+                            features: [
+                                {
+                                    type: 'FACE_DETECTION',
+                                    maxResults: 1
+                                }
+                            ]
+                        }
+                    ]
                 }),
-                contentType: 'application/json',
+               contentType: 'application/json',
                 dataType: 'json',
                 success: function (response) {
                     // 감정 분석 결과를 출력합니다.
