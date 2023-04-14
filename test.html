@@ -1,9 +1,9 @@
-// HTML 파일에서 아래와 같이 두 개의 태그를 준비합니다.
+
 <!-- 웹 카메라 화면을 보여줄 비디오 태그 -->
 <video id="videoElement" width="400" height="300" autoplay></video>
 <!-- 감정 분석 결과를 출력할 요소 -->
 <div id="resultElement"></div>
-
+<script>
 // JavaScript 코드
 // 웹 카메라 화면을 보여줄 비디오 요소와 감정 분석 결과를 출력할 요소를 가져옵니다.
 const videoElement = document.getElementById('videoElement');
@@ -56,3 +56,4 @@ navigator.mediaDevices.getUserMedia({ video: true })
 .catch(error => {
 console.error('카메라 접근에 에러가 발생하였습니다:', error);
 });
+</script>
