@@ -42,57 +42,60 @@
 
             // 캔버스의 데이터 URL을 가져옵니다.
             const dataURL = canvas.toDataURL('image/jpeg');
-          var api_key= {
-  "type": "service_account",
-  "project_id": "quantum-ether-381103",
-  "private_key_id": "9f873825b56483f1786de3e5bcd19bdd82a008ae",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDqnJXOvyCN1303\ns0dypNu27FYFhuAy+l/p7pAIuMWRZ73BTtPrV+8Htmb8jNbyz17zxOjnC1+QMzA7\njSvR5rHwk2+kuMVkyQ3WeMImy5nT/vhy3T8BZ9LgbMSjYC2o+1AdOy7WWdOkUWWv\nGneVVipyklAXFHg0q0G2dVWbW1dmqqQYEazpG6FjvZt+rZE1p1LC9xDpn3ZlZyEB\n18tJsBhnCZtvOHBzm3SGTsfe8C83dTSVTdgsvLYCXHcb4Xy537l0fp5kflElNMeq\nbACQu7GJcDd75JcvypYTPqKu92wPr8JlToHp/wVY0q4RcK76fCFN5kgenLyySFCE\nABMcLb6NAgMBAAECggEAD5Fb5HfsxFS9/53zGgGj/behfqTkSCWyix6UKqv+Giew\n4Pym1clEOHYLT+tVkQ+fHJxemwQ3b2ViKDV2KKu+93iFEkBbgtRPiYGCWposhzN2\nT4LsXR7DULaO9stZREsG1iW49irIPzFShsPCFyP8VZVtYJawYkhR6DZRe6lcO5jr\nG4pWXSL+UwxV+Gd98OWiN2SyxFgpWEpqrOeS77W7d/knMGYvhIqAnGxmAYjH2cp/\naPDjsdjtqEDIOZuqENc/WEn3rEM47jl3p6rRp/C6BYavaQbpCP04NRuruJbOHwT+\n4/ac3pkmIqkVjG17cXGgli/imRiOnq+Z+PkOmW8SYQKBgQD3MmHizBawu9ZLXWWC\nx//jsWWr4iNln7J2i07zSwGn4sZOSiaFx+PJOt4Q+2Ai1T7r0iW0UaPwUx1qNH+R\nHfCIrEbvtfLEFaQTBi37oH3DEiiwQssogY2/oimFd8yxNxZvoLU2EOJUmMU9bOLy\nqcaSSECJjNXONA9lbAfAU7JcYQKBgQDy93fIYNfSBxFyQk7wMRMy54qlFtpvBZ7T\n+aHqeizrp8R9wGY0gbbdjqMQoujIfZCeiS8jJnRibFyWpUBbC4OR4cMoCc+EUnWe\ndI+mQ6Y7cyG9MSmtFgkU4X9DI+prYqLlAw6ZfyHMU3zoc8AtjR4qFwecC3Y2KiWD\nHVNBMm7xrQKBgCt7aUyDqdocsG1BWIHQvGpI4iGB/cf6d2Hyz0hsgTYO5eMPmAcg\nSikzeaxzC04VRKQmqws08Sls9VehNG9KXO0toKy5zKJBTEMsaxo/+N8/anjWxvWx\nFEYJOFSJ5i+mCQRJuJZyEd3foZJUfPdCdfN1UiTf6RwEfFDS1+o0zsMBAoGBAN7V\nC+ygtQ+RH/UUz2UG/T6wkL28afVsyDBNQKzWBKDUqydR7+q0FMy6Zt95KdnHH33m\n/25TdGZYT8pyIMXfl3mR/vSXmtUW83yyFpU8chcQDp9/mWN/VDDsZ1VieTqnqhIz\nbY5lxM+qumJO1rBwPnwHxxjcgjxHB0Rq/tJKuOm5AoGAKM6Lz74Quvv9D+tXpqWb\nxvXzOFF8kJhT12G//u+YRqHJTIGgRknsodl+NxjcJ6DedJl456BQJ5ZzsfEYOtbf\nxzJD+Dm0y1EseBb7zxE/YG7/MkYq6+scxFBv0EUkDfPIzH2+uM2NRhuFUFxbi5iE\nSgEbPGUPAU1Djyn2ZeVkx3U=\n-----END PRIVATE KEY-----\n",
-  "client_email": "cloudvision@quantum-ether-381103.iam.gserviceaccount.com",
-  "client_id": "118346908876949479554",
-  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-  "token_uri": "https://oauth2.googleapis.com/token",
-  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cloudvision%40quantum-ether-381103.iam.gserviceaccount.com"
-};
+            var api_key= {
+              "type": "service_account",
+              "project_id": "visionapi-tset",
+              "private_key_id": "73a84bddf92543387c4f4724e2e082fb6f74a712",
+              "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCWakXI45Zf9+Wp\n2mz7gUOYzZJ5fPEbP1iGI6LFAuzK0Qu3o8fsvPEjAy8h+S89Y+0UXMwqPv1JXXrT\nkLkd6UMBrgbmWOW+FndCPMr/3Vhy1NQb07UFLPwlZ0Qf4Xsm+G9472BQg7S7hcHu\nroJ4cvK2fxx6dw0XuERqN0L/uvErLqW2w/5V3EIXfro36U26CZwQAEAX3Mur9FuC\nGS0Clk69B0dYvoxiMvpvP7ThJ7fB/71APy8ldBX+2XA+MRLYcamX/ayH7jpxIggx\ndL27zfLZDANo9nRleZrj2/yG649gkuuQUOpEEC780Ll1VvYQLMuvyqCFmG4VyB90\npR5WsC5RAgMBAAECggEACsAVtMHvYXSKSZV+7IrUlfs7WMuBP/1LCmtJmuMWoXhH\nahyekWD/qwzzNW5l3fFiZG4teWd/Gts/iBdz45tkWp5hh90arndUlrtZlufvBmYH\nsuVyrqgEbXfv+odXEfX3oaEaNSb0p+Jrde+rC4jLqBd1pZsUqHlXCnBgrX5i9j8H\nNB/Sedw1JgkXA1oBE5Czxc1dnsAugY1AWIXG/urw+MVpoFZ1D5bzcDqOhjxlR4My\nnTWWteQFUkpDZL5RyQ0fFAZytJJhAhOeW3kC48WGPEDUZtlNh7ktlPlbySabiMRi\ncLMTW5QMR4PwIn4BIWJ2M1+2lWNVFTzZ7aQ5eKxBsQKBgQDFQVJo4O7Ytnk6bF09\nSnrezng2KixogfTaYGCSMkHmttCQMbCOijBh6znGSjcAxopGpw2QCBGA+SobaroF\n5BrwChAwlG3sjfjSPGiTZfPetCataO7ZF4nXC7+2sl/pJFqO48w08zYzQKaLa5/T\nDei7MOH5IriVY7idChnPa1hYJwKBgQDDNeEnnolW5IGduLDEtWrsHyV5aqOjj6sD\nxHlzbMDYoKU0Uv30xMVvreN1bsYcbOUPY58nH2wGk5b5D7WnxPVu8YiNfntoiJ6V\nitWZyXo3Bo8qS1v40PVgsXkkrpgStAbHhKW3W2Cor0EnWLzXZqIXnBlMYa02A3+0\nj89YtUAYxwKBgHXaVVZ8LbglLcEORZb9DPRZ/9C82dOG8bgXpRs0E9O4nlvIlGhV\ngBrA47/pT3uTI8KaxKutZmfcdp/y4Dns03tfR9T+mb6gBG330bNfUplYoVMyQqJK\nQfzN9Dk/0bYGFmURDU0FkviEQ/1AzDjZMpfE2P51FDuNXRvWkR0wUZQ5AoGBALWr\na+nSOeBa8mGVIzU93M74QYjYfIfYSYBNFfYcjPBNuNGUNvHXOiMwAhIk0Exd72K+\nBLyFGqSYMBWD0DvdKchhEgMUZccn9eYX+aeQgKO6//uNfH94ABRHtgU0UyR81B5U\nTWDxsmfqCcmTZNNVmZ49ULHr6SXuZaflekMFEyy7AoGAaVxicuu+miLm+AbM/V3S\n1Nzm9COO+kpFWYKan2zaP3xQmotoax/DE1I9OYgNsCTxjdqx4JJiNJYvztc3KTlp\neVoJPgmZJR35FGBHn/wF1/84FvIfHpcp6IrsSu/fKZS7OcuiWcZ1dgn74e1qhHL0\n+SG62V7Rt9j+oGbJXHZnteA=\n-----END PRIVATE KEY-----\n",
+              "client_email": "sue06004@visionapi-tset.iam.gserviceaccount.com",
+              "client_id": "101093081499066326859",
+              "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+              "token_uri": "https://oauth2.googleapis.com/token",
+              "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+              "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sue06004%40visionapi-tset.iam.gserviceaccount.com"
+            }
+
 
             // 서버로 데이터를 전송하여 감정 분석 결과를 받아옵니다.
-          $.ajax({
+            $.ajax({
                 type: 'POST',
-                url: 'https://vision.googleapis.com/v1/images:annotate?key=api_key',
+                url: "https://vision.googleapis.com/v1/images:annotate",
+                headers:{
+                  "Authorization": `Bearer ya29.a0Ael9sCMxESaLC-53Gn27egfxmR13zMysdNOpBLbAKBxsJYwBSkIPa58-NZJq1JrTQaLKZ1xDRV_WA4l6iX27pHskcDPkAYBqMLCeS9oncx57dhmjNLi28YMV5HEG0MrV5BLLBJOkTK5vDm4-6uhFiwQz-vWnsusSBOXuaCgYKAQ0SARMSFQF4udJh2FSdm9BYVwsv0yUHL66IgQ0171`,
+                  "x-goog-user-project":"visionapi-tset",
+                },
                 data: JSON.stringify({
-                    requests: [
+                    "requests": [
                         {
-                            image: {
-                                content: dataURL.split(',')[1]
+                            "image": {
+                                "content": dataURL.split(',')[1]
                             },
-                            features: [
+                            "features": [
                                 {
-                                    type: 'FACE_DETECTION',
-                                    maxResults: 1
+                                    "type": 'FACE_DETECTION',
+                                    "maxResults": 1
                                 }
                             ]
                         }
                     ]
                 }),
-               contentType: 'application/json',
+                contentType: 'application/json',
                 dataType: 'json',
                 success: function (response) {
-    // 감정 분석 결과를 출력합니다.
-    const faceAnnotations = response.responses[0].faceAnnotations;
-    if (faceAnnotations && faceAnnotations.length > 0) {
-      const joyLikelihood = faceAnnotations[0].joyLikelihood;
-      const sorrowLikelihood = faceAnnotations[0].sorrowLikelihood;
-      const angerLikelihood = faceAnnotations[0].angerLikelihood;
-       showEmotionResult(joyLikelihood);
-    } else {
-      console.error('얼굴을 감지할 수 없습니다.');
-    }
-  },
-  error: function (xhr, status, error) {
-    console.error('감정 분석을 실패했습니다:', error);
-  }
-});
+                    // 감정 분석 결과를 출력합니다.
+                    const resultElement = document.getElementById('resultElement');
+                    resultElement.innerHTML +="joyLikelihood: "+response.responses[0].faceAnnotations[0].joyLikelihood+
+                    "<br>angerLikelihood: "+response.responses[0].faceAnnotations[0].angerLikelihood+
+                    "<br>sorrowLikelihood: "+response.responses[0].faceAnnotations[0].sorrowLikelihood+
+                    "<br>surpriseLikelihood: "+response.responses[0].faceAnnotations[0].surpriseLikelihood+"\n<hr>";
+                    console.log(response.responses[0]);
+                }
+                //error: function (xhr, status) {
+                //    console.error('감정 분석을 실패했습니다:');
+                //}
+            });
         }
+
         // 일정 간격으로 비디오 프레임을 캡처하고 감정 분석 결과를 받아오도록 설정합니다.
         setInterval(captureFrameAndDetectEmotion, 3000);
     </script>
