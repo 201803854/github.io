@@ -14,90 +14,46 @@
         <p id="resultElement"></p>
     </div>
     <script>
-        // 웹 카메라에서 비디오를 가져올 수 있는지 확인하고, 비디오 요소에 연결합니다.
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
-                const videoElement = document.getElementById('videoElement');
-                videoElement.srcObject = stream;
-            })
-            .catch((error) => {
-                console.error('비디오를 가져올 수 없습니다:', error);
-            });
+// 필요한 라이브러리를 로드합니다.
+const { Storage } = require('@google-cloud/storage');
+const vision = require('@google-cloud/vision');
+const cv = require('opencv4nodejs');
 
-        // 감정 분석 결과를 출력하는 함수
-        function showEmotionResult(emotion) {
-            const resultElement = document.getElementById('resultElement');
-            resultElement.innerHTML = `감정: ${emotion}`;
-        }
+// Google Cloud Storage 클라이언트를 생성합니다.
+const storage = new Storage();
+// Google Cloud Vision 클라이언트를 생성합니다.
+const client = new vision.ImageAnnotatorClient();
 
-        // 비디오에서 프레임을 캡처하고, 감정 분석 결과를 받아와 출력하는 함수
-        function captureFrameAndDetectEmotion() {
-            // 비디오 요소와 캔버스 요소를 가져옵니다.
-            const videoElement = document.getElementById('videoElement');
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
+// 카메라에서 얼굴 이미지를 촬영하고 감정 분석을 수행하는 함수
+async function captureAndAnalyzeEmotion() {
+  try {
+    // 카메라에서 이미지를 촬영합니다.
+    const image = await cv.VideoCapture(0).readAsync();
+    // 이미지를 JPEG 형식으로 인코딩합니다.
+    const jpegImage = cv.imencode('.jpg', image).toString('base64');
+    
+    // 감정 분석을 위해 Google Cloud Vision API에 이미지를 전송합니다.
+    const [result] = await client.faceDetection({
+      image: { content: jpegImage },
+      features: { type: 'FACE_DETECTION', maxResults: 1 },
+    });
 
-            // 비디오 프레임을 캔버스에 그립니다.
-            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+    // 감정 분석 결과를 추출합니다.
+    const faceAnnotations = result.faceAnnotations;
+    if (faceAnnotations && faceAnnotations.length > 0) {
+      const emotions = faceAnnotations[0].expressions;
+      console.log('감정 분석 결과:');
+      console.log(emotions);
+    } else {
+      console.log('얼굴이 감지되지 않았습니다.');
+    }
+  } catch (err) {
+    console.error('오류 발생:', err);
+  }
+}
 
-            // 캔버스의 데이터 URL을 가져옵니다.
-            const dataURL = canvas.toDataURL('image/jpeg');
-            var api_key= {
-              "type": "service_account",
-              "project_id": "visionapi-tset",
-              "private_key_id": "73a84bddf92543387c4f4724e2e082fb6f74a712",
-              "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCWakXI45Zf9+Wp\n2mz7gUOYzZJ5fPEbP1iGI6LFAuzK0Qu3o8fsvPEjAy8h+S89Y+0UXMwqPv1JXXrT\nkLkd6UMBrgbmWOW+FndCPMr/3Vhy1NQb07UFLPwlZ0Qf4Xsm+G9472BQg7S7hcHu\nroJ4cvK2fxx6dw0XuERqN0L/uvErLqW2w/5V3EIXfro36U26CZwQAEAX3Mur9FuC\nGS0Clk69B0dYvoxiMvpvP7ThJ7fB/71APy8ldBX+2XA+MRLYcamX/ayH7jpxIggx\ndL27zfLZDANo9nRleZrj2/yG649gkuuQUOpEEC780Ll1VvYQLMuvyqCFmG4VyB90\npR5WsC5RAgMBAAECggEACsAVtMHvYXSKSZV+7IrUlfs7WMuBP/1LCmtJmuMWoXhH\nahyekWD/qwzzNW5l3fFiZG4teWd/Gts/iBdz45tkWp5hh90arndUlrtZlufvBmYH\nsuVyrqgEbXfv+odXEfX3oaEaNSb0p+Jrde+rC4jLqBd1pZsUqHlXCnBgrX5i9j8H\nNB/Sedw1JgkXA1oBE5Czxc1dnsAugY1AWIXG/urw+MVpoFZ1D5bzcDqOhjxlR4My\nnTWWteQFUkpDZL5RyQ0fFAZytJJhAhOeW3kC48WGPEDUZtlNh7ktlPlbySabiMRi\ncLMTW5QMR4PwIn4BIWJ2M1+2lWNVFTzZ7aQ5eKxBsQKBgQDFQVJo4O7Ytnk6bF09\nSnrezng2KixogfTaYGCSMkHmttCQMbCOijBh6znGSjcAxopGpw2QCBGA+SobaroF\n5BrwChAwlG3sjfjSPGiTZfPetCataO7ZF4nXC7+2sl/pJFqO48w08zYzQKaLa5/T\nDei7MOH5IriVY7idChnPa1hYJwKBgQDDNeEnnolW5IGduLDEtWrsHyV5aqOjj6sD\nxHlzbMDYoKU0Uv30xMVvreN1bsYcbOUPY58nH2wGk5b5D7WnxPVu8YiNfntoiJ6V\nitWZyXo3Bo8qS1v40PVgsXkkrpgStAbHhKW3W2Cor0EnWLzXZqIXnBlMYa02A3+0\nj89YtUAYxwKBgHXaVVZ8LbglLcEORZb9DPRZ/9C82dOG8bgXpRs0E9O4nlvIlGhV\ngBrA47/pT3uTI8KaxKutZmfcdp/y4Dns03tfR9T+mb6gBG330bNfUplYoVMyQqJK\nQfzN9Dk/0bYGFmURDU0FkviEQ/1AzDjZMpfE2P51FDuNXRvWkR0wUZQ5AoGBALWr\na+nSOeBa8mGVIzU93M74QYjYfIfYSYBNFfYcjPBNuNGUNvHXOiMwAhIk0Exd72K+\nBLyFGqSYMBWD0DvdKchhEgMUZccn9eYX+aeQgKO6//uNfH94ABRHtgU0UyR81B5U\nTWDxsmfqCcmTZNNVmZ49ULHr6SXuZaflekMFEyy7AoGAaVxicuu+miLm+AbM/V3S\n1Nzm9COO+kpFWYKan2zaP3xQmotoax/DE1I9OYgNsCTxjdqx4JJiNJYvztc3KTlp\neVoJPgmZJR35FGBHn/wF1/84FvIfHpcp6IrsSu/fKZS7OcuiWcZ1dgn74e1qhHL0\n+SG62V7Rt9j+oGbJXHZnteA=\n-----END PRIVATE KEY-----\n",
-              "client_email": "sue06004@visionapi-tset.iam.gserviceaccount.com",
-              "client_id": "101093081499066326859",
-              "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-              "token_uri": "https://oauth2.googleapis.com/token",
-              "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-              "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/sue06004%40visionapi-tset.iam.gserviceaccount.com"
-            }
-
-
-            // 서버로 데이터를 전송하여 감정 분석 결과를 받아옵니다.
-            $.ajax({
-                type: 'POST',
-                url: "https://vision.googleapis.com/v1/images:annotate",
-                headers:{
-                  "Authorization": `Bearer ya29.a0Ael9sCOcXA7Hj4BHEIqqv5nFkihAjoReRJ6xXLPV5Jgxfovt1Qq4AuNQiiwiGu-Xt58b8Ji10ro5iYcHTDLWuoRE1lyS2TNCDLBOTHPwTYEPoo1P8OpH-j1HFYnrmtOtQkOz-sVZOwPp9mIRbLbR7wfAaEnYy-Ii_RLtaCgYKAQcSARASFQF4udJhNRmc7mnci3AUXXImyWW-JA0171`,
-                  "x-goog-user-project":"visionapi-tset",
-                },
-                data: JSON.stringify({
-                    "requests": [
-                        {
-                            "image": {
-                                "content": dataURL.split(',')[1]
-                            },
-                            "features": [
-                                {
-                                    "type": 'FACE_DETECTION',
-                                    "maxResults": 1
-                                }
-                            ]
-                        }
-                    ]
-                }),
-                contentType: 'application/json',
-                dataType: 'json',
-                success: function (response) {
-                    // 감정 분석 결과를 출력합니다.
-                    const resultElement = document.getElementById('resultElement');
-                    resultElement.innerHTML +="joyLikelihood: "+response.responses[0].faceAnnotations[0].joyLikelihood+
-                    "<br>angerLikelihood: "+response.responses[0].faceAnnotations[0].angerLikelihood+
-                    "<br>sorrowLikelihood: "+response.responses[0].faceAnnotations[0].sorrowLikelihood+
-                    "<br>surpriseLikelihood: "+response.responses[0].faceAnnotations[0].surpriseLikelihood+"\n<hr>";
-                    console.log(response.responses[0]);
-                }
-                //error: function (xhr, status) {
-                //    console.error('감정 분석을 실패했습니다:');
-                //}
-            });
-        }
-
-        // 일정 간격으로 비디오 프레임을 캡처하고 감정 분석 결과를 받아오도록 설정합니다.
-        setInterval(captureFrameAndDetectEmotion, 3000);
+// 카메라에서 얼굴 이미지 촬영 및 감정 분석 수행
+captureAndAnalyzeEmotion();
     </script>
 </body>
 </html>
