@@ -15,24 +15,27 @@
     </div>
     <script>
 // 필요한 라이브러리를 로드합니다.
+const fs = require('fs');
 const { Storage } = require('@google-cloud/storage');
-const vision = require('@google-cloud/vision');
+const { ImageAnnotatorClient } = require('@google-cloud/vision');
 const cv = require('opencv4nodejs');
+const MediaCapture = require('node-media-capture');
 
 // Google Cloud Storage 클라이언트를 생성합니다.
 const storage = new Storage();
 // Google Cloud Vision 클라이언트를 생성합니다.
-
 const apiKey = 'quantum-ether-381103-9f873825b564.json';
-const client = new vision.ImageAnnotatorClient({ keyFilename: apiKey });
+const client = new ImageAnnotatorClient({ keyFilename: apiKey });
+
 // 카메라에서 얼굴 이미지를 촬영하고 감정 분석을 수행하는 함수
 async function captureAndAnalyzeEmotion() {
   try {
     // 카메라에서 이미지를 촬영합니다.
-    const image = await cv.VideoCapture(0).readAsync();
+    const cap = new cv.VideoCapture(0);
+    const frame = await cap.readAsync();
     // 이미지를 JPEG 형식으로 인코딩합니다.
-    const jpegImage = cv.imencode('.jpg', image).toString('base64');
-    
+    const jpegImage = cv.imencode('.jpg', frame).toString('base64');
+
     // 감정 분석을 위해 Google Cloud Vision API에 이미지를 전송합니다.
     const [result] = await client.faceDetection({
       image: { content: jpegImage },
@@ -43,8 +46,8 @@ async function captureAndAnalyzeEmotion() {
     const faceAnnotations = result.faceAnnotations;
     if (faceAnnotations && faceAnnotations.length > 0) {
       const emotions = faceAnnotations[0].expressions;
-      console.log('감정 분석 결과:');
-      console.log(emotions);
+      <p>console.log('감정 분석 결과:');</p>
+      <p>console.log(emotions);</p>
     } else {
       console.log('얼굴이 감지되지 않았습니다.');
     }
@@ -53,8 +56,20 @@ async function captureAndAnalyzeEmotion() {
   }
 }
 
-// 카메라에서 얼굴 이미지 촬영 및 감정 분석 수행
-captureAndAnalyzeEmotion();
+// 사용자로부터 카메라 접근 권한을 요청하고, 권한이 허용된 경우 이미지 촬영 및 감정 분석 수행
+async function requestCameraPermissionAndCaptureAndAnalyzeEmotion() {
+  try {
+    // 카메라 접근 권한을 요청합니다.
+    const mediaCapture = new MediaCapture();
+    await mediaCapture.requestVideoPermission();
+
+    // 권한이 허용된 경우 이미지 촬영 및 감정 분석 수행
+    await captureAndAnalyzeEmotion();
+  } catch (err) {
+    console.error('오류 발생:', err);
+  }
+}
+requestCameraPermissionAndCaptureAndAnalyzeEmotion();
     </script>
 </body>
 </html>
