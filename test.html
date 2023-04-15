@@ -22,8 +22,9 @@ const cv = require('opencv4nodejs');
 // Google Cloud Storage 클라이언트를 생성합니다.
 const storage = new Storage();
 // Google Cloud Vision 클라이언트를 생성합니다.
-const client = new vision.ImageAnnotatorClient();
 
+const apiKey = 'quantum-ether-381103-9f873825b564.json';
+const client = new vision.ImageAnnotatorClient({ keyFilename: apiKey });
 // 카메라에서 얼굴 이미지를 촬영하고 감정 분석을 수행하는 함수
 async function captureAndAnalyzeEmotion() {
   try {
