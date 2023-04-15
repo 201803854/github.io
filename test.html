@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Webcam Emotion Detection</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>감정 분석</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Webcam Emotion Detection</h1>
-    <div>
-        <video id="videoElement" width="640" height="480" autoplay></video>
-    </div>
-    <div>
-        <h2>감정 분석 결과</h2>
-        <p id="resultElement"></p>
-    </div>
+    <h1>감정 분석 결과</h1>
+    <div id="emotionResult"></div>
+
     <script>
-// 필요한 라이브러리를 로드합니다.
+        // 필요한 라이브러리를 로드합니다.
 const fs = require('fs');
 const { Storage } = require('@google-cloud/storage');
 const { ImageAnnotatorClient } = require('@google-cloud/vision');
@@ -26,37 +26,44 @@ const storage = new Storage();
 // Google Cloud Vision 클라이언트를 생성합니다.
 const apiKey = 'quantum-ether-381103-9f873825b564.json';
 const client = new ImageAnnotatorClient({ keyFilename: apiKey });
+        // 감정 분석 결과를 화면에 표시하는 함수
+        function showEmotionResult(emotion) {
+            const emotionResult = document.getElementById('emotionResult');
+            emotionResult.innerHTML = `<p><strong>감정:</strong> ${emotion}</p>`;
+        }
 
-// 카메라에서 얼굴 이미지를 촬영하고 감정 분석을 수행하는 함수
-async function captureAndAnalyzeEmotion() {
-  try {
-    // 카메라에서 이미지를 촬영합니다.
-    const cap = new cv.VideoCapture(0);
-    const frame = await cap.readAsync();
-    // 이미지를 JPEG 형식으로 인코딩합니다.
-    const jpegImage = cv.imencode('.jpg', frame).toString('base64');
+        // 카메라에서 얼굴 이미지를 촬영하고 감정 분석을 수행하는 함수
+        async function captureAndAnalyzeEmotion() {
+            try {
+                // 카메라에서 이미지를 촬영합니다.
+                const cap = new cv.VideoCapture(0);
+                const frame = await cap.readAsync();
+                // 이미지를 JPEG 형식으로 인코딩합니다.
+                const jpegImage = cv.imencode('.jpg', frame).toString('base64');
 
-    // 감정 분석을 위해 Google Cloud Vision API에 이미지를 전송합니다.
-    const [result] = await client.faceDetection({
-      image: { content: jpegImage },
-      features: { type: 'FACE_DETECTION', maxResults: 1 },
-    });
+                // 감정 분석을 위해 Google Cloud Vision API에 이미지를 전송합니다.
+                const [result] = await client.faceDetection({
+                    image: { content: jpegImage },
+                    features: { type: 'FACE_DETECTION', maxResults: 1 },
+                });
 
-    // 감정 분석 결과를 추출합니다.
-    const faceAnnotations = result.faceAnnotations;
-    if (faceAnnotations && faceAnnotations.length > 0) {
-      const emotions = faceAnnotations[0].expressions;
-      <p>console.log('감정 분석 결과:');</p>
-      <p>console.log(emotions);</p>
-    } else {
-      console.log('얼굴이 감지되지 않았습니다.');
-    }
-  } catch (err) {
-    console.error('오류 발생:', err);
-  }
-}
+                // 감정 분석 결과를 추출합니다.
+                const faceAnnotations = result.faceAnnotations;
+                if (faceAnnotations && faceAnnotations.length > 0) {
+                    const emotions = faceAnnotations[0].expressions;
+                    console.log('감정 분석 결과:');
+                    console.log(emotions);
+                    // 감정 분석 결과를 화면에 표시합니다.
+                    showEmotionResult(emotions);
+                } else {
+                    console.log('얼굴이 감지되지 않았습니다.');
+                }
+            } catch (err) {
+                console.error('오류 발생:', err);
+            }
+        }
 
-// 사용자로부터 카메라 접근 권한을 요청하고, 권한이 허용된 경우 이미지 촬영 및 감정 분석 수행
+ // 사용자로부터 카메라 접근 권한을 요청하고, 권한이 허용된 경우 이미지 촬영 및 감정 분석 수행
 async function requestCameraPermissionAndCaptureAndAnalyzeEmotion() {
   try {
     // 카메라 접근 권한을 요청합니다.
@@ -70,6 +77,3 @@ async function requestCameraPermissionAndCaptureAndAnalyzeEmotion() {
   }
 }
 requestCameraPermissionAndCaptureAndAnalyzeEmotion();
-    </script>
-</body>
-</html>
